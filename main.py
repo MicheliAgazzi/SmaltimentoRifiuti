@@ -12,7 +12,9 @@ def main():
     print("""Pannello gestione smaltimento rifiuti:
     1) Aggiungi
     2) Mostra
-    3) Reset
+    3) Mostra categorie
+    4) Reset
+    5) Stampa
 
 """)
     comando = int(input("Inserisci il comando da eseguire: "))
@@ -23,7 +25,11 @@ def main():
         case 2:
             mostra()
         case 3:
+            mostra_categorie()
+        case 4:
             reset()
+        case 5:
+            stampa()
         case _:
             print("Comando non trovato")
             sleep(2)
@@ -91,10 +97,16 @@ def aggiungi(r1, r2, r3, r4, r5):
 
 def mostra():
     lista = open('rifiuti.txt', 'r')
+    prima_riga = True
     system('cls')
+
     print("Lista dei prodotti inseriti:\n")
     
     for line in lista:
+        if prima_riga:
+            prima_riga = False
+            continue 
+        
         parti = line.strip().split(';')
         print(f"""    Prodotto --> {parti[1]}
     Quantità --> {parti[0]}
@@ -106,11 +118,60 @@ def mostra():
     main()
 
 
+
+def mostra_categorie():
+    system('cls')
+    r1 = open('./categorie/R1.txt', 'r').readlines()
+    r2 = open('./categorie/R2.txt', 'r').readlines()
+    r3 = open('./categorie/R3.txt', 'r').readlines()
+    r4 = open('./categorie/R4.txt', 'r').readlines()
+    r5 = open('./categorie/R5.txt', 'r').readlines()
+
+    print("""Pannello visualizzazione categorie:
+    1) R1
+    2) R2
+    3) R3
+    4) R4
+    5) R5
+
+""")
+    
+    comando = int(input("Inserisci il comando da eseguire: "))
+    match comando:
+        case 1:
+            visualizzazione(r1)
+        case 2:
+            visualizzazione(r2)
+        case 3:
+            visualizzazione(r3)
+        case 4:
+            visualizzazione(r4)
+        case 5:
+            visualizzazione(r5)
+        case _:
+            print("Comando non trovato")
+            sleep(2)
+            mostra_categorie()
+            
+
+def visualizzazione(comando):
+    system('cls')
+    for i in comando:
+        print(i)
+    input("\nPremi INVIO per continuare...")
+    main()
+
 def reset():
     unlink('rifiuti.txt')
-    open('rifiuti.txt', 'w').close()
+    lista = open('rifiuti.txt', 'w')
+    lista.write("Quantità;Prodotto;Categoria\n")
+    lista.close()
     print("File resettato correttamente")
     input("Premi INVIO per continuare...")
+    main()
+
+def stampa():
+    system('notepad /p rifiuti.txt')
     main()
 
 main()
